@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Entity() //Para criar uma entity sempre tem que usar o decorator
 @Unique(['email'])
@@ -46,4 +47,9 @@ export class User extends BaseEntity {
 
   @UpdateDateColumn()
   updateAt: Date;
+
+  async checkPassword(password: string): Promise<boolean> {
+    const hash = await bcrypt.hash(password, this.salt);
+    return hash === this.password;
+  }
 }
